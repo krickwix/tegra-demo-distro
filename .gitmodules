@@ -26,3 +26,7 @@
 	path = repos/meta-tegra-community
 	url = https://github.com/OE4T/meta-tegra-community
 	branch = honister
+[submodule "repos/meta-clang"]
+	path = repos/meta-clang
+	url = https://github.com/kraj/meta-clang
+	branch = master
