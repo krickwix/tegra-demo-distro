@@ -26,3 +26,6 @@
 	path = repos/meta-tegra-community
 	url = https://github.com/OE4T/meta-tegra-community.git
 	branch = hardknott
+[submodule "meta-security"]
+	path = meta-security
+	url = git://git.yoctoproject.org/meta-security
