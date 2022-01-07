@@ -26,3 +26,7 @@
 	path = repos/meta-tegra-community
 	url = https://github.com/OE4T/meta-tegra-community
 	branch = master
+[submodule "repos/meta-greatbear"]
+	path = repos/meta-greatbear
+	url = https://github.com/krickwix/meta-greatbear.git
+	branch = develop
