@@ -2,8 +2,11 @@ pipeline {
     agent { label 'yocto'}
     stages {
         stage ('dependencies') {
-            withEnv(['DEBIAN_FRONTEND=noninteractive'])
-            sh('sudo apt -y update && sudo apt -y upgrade && sudo apt -y install openjdk-11-jdk build-essential gcc-8 g++-8 git bmap-tools chrpath diffstat zstd')
+            steps {
+                withEnv(['DEBIAN_FRONTEND=noninteractive']) {
+                    sh('sudo apt -y update && sudo apt -y upgrade && sudo apt -y install openjdk-11-jdk build-essential gcc-8 g++-8 git bmap-tools chrpath diffstat zstd')
+                }
+            }
         }
         stage('scm') {
             steps {
