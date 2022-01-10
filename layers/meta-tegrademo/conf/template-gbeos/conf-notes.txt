@@ -1,0 +1,6 @@
+### Shell environment set up for builds. ###
+
+You can now run 'bitbake <target>'
+Targets for building Tegra demo images with test applications:
+    gbeos-dev
+    gbeos
