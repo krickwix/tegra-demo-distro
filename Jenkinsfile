@@ -17,7 +17,7 @@ pipeline {
         }
         stage("build") {
             steps {
-                withEnv(['LANG="C"']) {
+                withEnv(['LANG="C"','all_proxy="http://proxy.esl.cisco.com:80"']) {
                     sh(". setup-env --machine jetson-nano-devkit-emmc --distro tegrademo && \
                     MACHINE=jetson-nano-devkit-emmc bitbake demo-image-full && \
                     MACHINE=jetson-nano-devkit bitbake demo-image-full && \
