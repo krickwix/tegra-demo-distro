@@ -22,7 +22,7 @@ pipeline {
 		    cat >> conf/local.conf << EOF
 		    SOURCE_MIRROR_URL = "http://10.60.16.240/x86"
 		    INHERIT += "own-mirrors"
-		    EOF
+		    EOF && \
                     MACHINE=jetson-nano-devkit-emmc bitbake demo-image-full && \
                     MACHINE=jetson-nano-devkit bitbake demo-image-full && \
                     MACHINE=jetson-xavier-nx-devkit bitbake demo-image-full && \
