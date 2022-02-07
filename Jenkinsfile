@@ -17,7 +17,7 @@ pipeline {
         }
         stage("build") {
             steps {
-                withEnv(['LANG="C"','all_proxy="http://proxy.esl.cisco.com:80"']) {
+                withEnv(['LANG="C"']) {
                     sh(". setup-env --machine jetson-nano-devkit-emmc --distro tegrademo && \
                     MACHINE=jetson-nano-devkit-emmc bitbake demo-image-full && \
                     MACHINE=jetson-nano-devkit bitbake demo-image-full && \
@@ -26,6 +26,19 @@ pipeline {
                 }
             }
         }
+	stage("artefacts") {
+            steps {
+                archiveArtifacts artifacts: 'build/tmp/deploy/images/**/*.tegraflash.tar.gz',
+                   allowEmptyArchive: true,
+                   fingerprint: true,
+                   onlyIfSuccessful: true
+		minio bucket: 'gbear-yocto-images-jetson',
+                   credentialsId: 'minio_gbear-user',
+                   targetFolder: 'jenkins-build/',
+                   host: 'http://10.60.16.240:9199',
+                   includes: 'build/tmp-glibc/deploy/images/**/*.tegraflash.tar.gz'
+	    }
+	}
     }
     post {
         // Clean after build
