@@ -1,0 +1,2 @@
+TEMPLATECONF=/mnt/data/tegra-demo-distro/layers/meta-greatbear/conf/template-gbeos-tegra
+. layers/oe-init-build-env $*
