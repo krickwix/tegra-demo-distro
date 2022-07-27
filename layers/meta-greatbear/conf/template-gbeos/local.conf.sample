@@ -1,0 +1,5 @@
+DISTRO ?= "gbeos"
+MACHINE ??= "qemux86-64"
+CONF_VERSION = "2"
+IMAGE_FSTYPES = "wic.vmdk"
+IMAGE_ROOTFS_EXTRA_SPACE = "11943040"

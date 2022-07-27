@@ -26,3 +26,6 @@
 	path = repos/meta-tegra-community
 	url = https://github.com/OE4T/meta-tegra-community
 	branch = kirkstone
+[submodule "repos/meta-browser"]
+	path = repos/meta-browser
+	url = https://github.com/OSSystems/meta-browser.git

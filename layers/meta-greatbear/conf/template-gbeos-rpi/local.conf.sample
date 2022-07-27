@@ -1,0 +1,6 @@
+DISTRO ?= "gbeos"
+MACHINE ??= "raspberrypi4-64"
+#MACHINE ??= "raspberrypi3-64
+CMDLINE_ROOTFS ?= "root=/dev/mmcblk0p2 rootfstype=ext4 rootwait cgroup_memory=1 cgroup_enable=memory"
+CONF_VERSION = "2"
+IMAGE_ROOTFS_EXTRA_SPACE = "10240"

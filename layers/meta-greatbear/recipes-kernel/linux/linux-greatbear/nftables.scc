@@ -1,0 +1,2 @@
+define KFEATURES_DESCRIPTION "Enable additional netfilter features"
+kconf non-hardware nftables.cfg

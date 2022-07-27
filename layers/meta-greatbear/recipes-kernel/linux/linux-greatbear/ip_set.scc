@@ -1,0 +1,2 @@
+define KFEATURE_DESCRIPTION "Enable ip_set features"
+kconf non-hardware ip_set.cfg
