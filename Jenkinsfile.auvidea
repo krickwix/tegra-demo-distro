@@ -1,6 +1,7 @@
 pipeline {
     agent {
-          docker { image 'docker.io/krickwix/ybuild:v0.3' }
+        label 'greatbear && xlarge'
+        docker { image 'docker.io/krickwix/ybuild:v0.3' }
     }
     environment {
         BRANCH_NAME = "${GIT_BRANCH.split('/').size() > 1 ? GIT_BRANCH.split('/')[1..-1].join('/') : GIT_BRANCH}"
