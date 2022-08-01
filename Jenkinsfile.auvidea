@@ -1,6 +1,5 @@
 pipeline {
     agent {
-        label 'greatbear && xlarge'
         docker { image 'docker.io/krickwix/ybuild:v0.3' }
     }
     environment {
