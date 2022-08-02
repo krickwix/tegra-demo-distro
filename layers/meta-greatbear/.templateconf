@@ -1,0 +1,1 @@
+TEMPLATECONF=${TEMPLATECONF:-meta-greatbear/conf/template-$DISTRO}

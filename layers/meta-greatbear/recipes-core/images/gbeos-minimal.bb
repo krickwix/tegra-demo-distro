@@ -81,7 +81,8 @@ PREFERRED_PROVIDER_virtual/bootlogo:tegra = "bootlogo-custom"
 
 IMAGE_FEATURES:append = " splash ssh-server-openssh package-management"
 IMAGE_FEATURES:append = " debug-tweaks empty-root-password allow-empty-password allow-root-login post-install-logging"
-IMAGE_FEATURES:append = " splash x11-base x11-sato hwcodecs "
+# IMAGE_FEATURES:append = " splash x11-base x11-sato hwcodecs "
+IMAGE_FEATURES:append = " splash x11-base hwcodecs "
 IMAGE_INSTALL = "\
     packagegroup-core-boot \
     packagegroup-core-full-cmdline \
@@ -91,7 +92,7 @@ IMAGE_INSTALL = "\
     linux-firmware kernel-modules \
     python3-ansible \
     python3-distutils python3-distutils-extra \
-    keepalived \
+    keepalived dpkg \
     ${CORE_IMAGE_EXTRA_INSTALL} \
     "
 IMAGE_INSTALL:append = " packagegroup-demo-base packagegroup-demo-basetests packagegroup-demo-x11tests packagegroup-demo-vulkantests"
@@ -99,7 +100,9 @@ IMAGE_INSTALL:append = " packagegroup-demo-systemd "
 IMAGE_INSTALL:append = " libvisionworks-devso-symlink nvidia-docker cuda-libraries tegra-mmapi-tests vpi1-tests "
 IMAGE_INSTALL:append = " nvidia-docker cudnn  libvisionworks libvisionworks-sfm libvisionworks-tracking cuda-libraries cuda-toolkit"
 # IMAGE_INSTALL:append = " tensorrt tensorrt-tests "
-# IMAGE_INSTALL:append = " cuda-toolkit cuda-command-line-tools cuda-samples cuda-shared-binaries libnvvpi1"
+IMAGE_INSTALL:append = " cuda-toolkit cuda-command-line-tools cuda-samples cuda-shared-binaries libnvvpi1"
+IMAGE_INSTALL:append = " cuda-toolkit cuda-command-line-tools cuda-samples libnvvpi1"
+IMAGE_INSTALL:append = " k3s kernel-modules curl dpkg iscsi-initiator-utils python3-ansible "
 TOOLCHAIN_HOST_TASK += "nativesdk-packagegroup-cuda-sdk-host"
 
 # inherit features_check core-image setuptools3
