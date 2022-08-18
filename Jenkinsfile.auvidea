@@ -15,7 +15,7 @@ pipeline {
         }
         stage("build") {
             steps {
-                withEnv(['LANG="C"','all_proxy=socks5://proxy-ams-1.cisco.com:1080','no_proxy=10.60.16.249']) {
+                withEnv(['LANG="C"','all_proxy=socks5h://proxy-ams-1.cisco.com:1080','no_proxy=10.60.16.249']) {
                     sh(". setup-env --machine jetson-xavier-nx-devkit-tx2-nx --distro gbeos && \
                     echo '' >> conf/local.conf && \
                     echo 'INHERIT += \"own-mirrors\"' >> conf/local.conf && \
