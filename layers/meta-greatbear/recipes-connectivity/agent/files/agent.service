@@ -1,0 +1,15 @@
+[Unit]
+Description=greatbear agent service
+
+[Install]
+WantedBy=multi-user.target
+
+[Service]
+Type=exec
+TimeoutStartSec=0
+Restart=always
+RestartSec=15s
+Restart=always
+EnvironmentFile=/gigastorage/agent.env
+ExecStartPre=mkdir -p /gigastorage/var_lib_greatbear
+ExecStart=/usr/bin/agent
