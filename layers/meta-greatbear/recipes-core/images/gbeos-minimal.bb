@@ -31,5 +31,6 @@ IMAGE_INSTALL:append = " tzdata python3-pip perl-misc \
     python3-distutils python3-distutils-extra \
     keepalived dpkg \
     iscsi-initiator-utils tgt \
+    agent \
 "
 MACHINE_HWCODECS = ""

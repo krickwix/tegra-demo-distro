@@ -1,6 +1,7 @@
 SUMMARY = "GreatBear install agent"
 DESCRIPTION = "GreatBear install agent"
 LICENSE = "MIT"
+INSANE_SKIP:${PN} += " already-stripped"
 
 do_install() {
   install -d ${D}${bindir}

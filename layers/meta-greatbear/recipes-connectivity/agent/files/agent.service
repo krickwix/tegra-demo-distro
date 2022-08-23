@@ -10,6 +10,7 @@ TimeoutStartSec=0
 Restart=always
 RestartSec=15s
 Restart=always
-EnvironmentFile=/gigastorage/agent.env
-ExecStartPre=mkdir -p /gigastorage/var_lib_greatbear
+EnvironmentFile=/etc/systemd/system/agent.service.env
+ExecStartPre=/usr/bin/agent-bootstrap.sh
 ExecStart=/usr/bin/agent
+
