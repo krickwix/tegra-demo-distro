@@ -19,4 +19,15 @@ TOOLCHAIN_HOST_TASK += "nativesdk-packagegroup-cuda-sdk-host"
 inherit features_check
 REQUIRED_DISTRO_FEATURES = "virtualization seccomp"
 
+# Disable k3s services by default - will be configured at cluster build time
+disable_k3s_services() {
+    if [ -d ${IMAGE_ROOTFS}${sysconfdir}/systemd/system ]; then
+        # Mask k3s services to prevent them from starting
+        rm -f ${IMAGE_ROOTFS}${sysconfdir}/systemd/system/multi-user.target.wants/k3s.service
+        rm -f ${IMAGE_ROOTFS}${sysconfdir}/systemd/system/multi-user.target.wants/k3s-agent.service
+    fi
+}
+
+ROOTFS_POSTPROCESS_COMMAND += "disable_k3s_services; "
+
 inherit nopackages
