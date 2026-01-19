@@ -12,6 +12,9 @@ inherit core-image
 CORE_IMAGE_BASE_INSTALL += "nvidia-docker cuda-libraries"
 CORE_IMAGE_BASE_INSTALL += "k3s-server k3s-agent"
 
+# Add utility packages for cluster management and certificate handling
+IMAGE_INSTALL:append = " curl wget ca-certificates "
+
 # Add CUDA SDK host tools to the SDK
 TOOLCHAIN_HOST_TASK += "nativesdk-packagegroup-cuda-sdk-host"
 
