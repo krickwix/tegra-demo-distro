@@ -24,15 +24,19 @@ IMAGE_INSTALL:append = " curl wget ca-certificates "
 inherit features_check
 REQUIRED_DISTRO_FEATURES = "virtualization seccomp"
 
-# Disable k3s services by default - will be configured at cluster build time
-disable_k3s_services() {
+# Disable k3s and docker services by default - will be configured at cluster build time
+disable_container_services() {
     if [ -d ${IMAGE_ROOTFS}${sysconfdir}/systemd/system ]; then
-        # Mask k3s services to prevent them from starting
+        # Disable k3s services to prevent them from starting
         rm -f ${IMAGE_ROOTFS}${sysconfdir}/systemd/system/multi-user.target.wants/k3s.service
         rm -f ${IMAGE_ROOTFS}${sysconfdir}/systemd/system/multi-user.target.wants/k3s-agent.service
+        
+        # Disable docker service at boot time
+        rm -f ${IMAGE_ROOTFS}${sysconfdir}/systemd/system/multi-user.target.wants/docker.service
+        rm -f ${IMAGE_ROOTFS}${sysconfdir}/systemd/system/sockets.target.wants/docker.socket
     fi
 }
 
-ROOTFS_POSTPROCESS_COMMAND += "disable_k3s_services; "
+ROOTFS_POSTPROCESS_COMMAND += "disable_container_services; "
 
 inherit nopackages
