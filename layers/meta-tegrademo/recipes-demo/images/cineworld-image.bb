@@ -1,22 +1,24 @@
-DESCRIPTION = "Cineworld minimal image with openssh (root login, no password), nvidia-docker, CUDA, and k3s features"
+DESCRIPTION = "Cineworld full-featured image based on demo-image-full (without GUI) with openssh (root login, no password), \
+nvidia-docker, CUDA, TensorRT, VPI, Tegra MMAPI, and k3s for Kubernetes orchestration"
 
 LICENSE = "MIT"
 
-# Enable SSH server with root login and empty password
-IMAGE_FEATURES += "ssh-server-openssh empty-root-password allow-root-login"
+# Use demo-image-common as base (includes ssh, packagegroups, CUDA SDK)
+require demo-image-common.inc
 
-# Inherit core-image for minimal base
-inherit core-image
+# Enable root login with empty password
+IMAGE_FEATURES += "empty-root-password allow-root-login"
 
-# Add nvidia-docker, CUDA libraries, k3s, and related features
-CORE_IMAGE_BASE_INSTALL += "nvidia-docker cuda-libraries"
+# Add packages from demo-image-full (excluding X11/graphical components)
+CORE_IMAGE_BASE_INSTALL += "libvisionworks-devso-symlink nvidia-docker cuda-libraries"
+CORE_IMAGE_BASE_INSTALL += "tegra-mmapi-tests vpi1-tests tensorrt-tests"
+CORE_IMAGE_BASE_INSTALL += "${@bb.utils.contains('DISTRO_FEATURES', 'vulkan', 'packagegroup-demo-vulkantests', '', d)}"
+
+# Add k3s for Kubernetes orchestration
 CORE_IMAGE_BASE_INSTALL += "k3s-server k3s-agent"
 
 # Add utility packages for cluster management and certificate handling
 IMAGE_INSTALL:append = " curl wget ca-certificates "
-
-# Add CUDA SDK host tools to the SDK
-TOOLCHAIN_HOST_TASK += "nativesdk-packagegroup-cuda-sdk-host"
 
 # Check for required distro features (k3s requires seccomp)
 inherit features_check
