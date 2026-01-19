@@ -11,7 +11,7 @@ IMAGE_FEATURES += "empty-root-password allow-root-login"
 
 # Add packages from demo-image-full (excluding X11/graphical components)
 CORE_IMAGE_BASE_INSTALL += "libvisionworks-devso-symlink nvidia-docker cuda-libraries"
-CORE_IMAGE_BASE_INSTALL += "tegra-mmapi-tests vpi1-tests tensorrt-tests"
+# CORE_IMAGE_BASE_INSTALL += "tegra-mmapi-tests vpi1-tests tensorrt-tests"
 CORE_IMAGE_BASE_INSTALL += "${@bb.utils.contains('DISTRO_FEATURES', 'vulkan', 'packagegroup-demo-vulkantests', '', d)}"
 
 # Add utility packages for cluster management and certificate handling
