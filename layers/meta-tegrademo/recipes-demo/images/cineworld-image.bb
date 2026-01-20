@@ -17,6 +17,31 @@ CORE_IMAGE_BASE_INSTALL += "${@bb.utils.contains('DISTRO_FEATURES', 'vulkan', 'p
 # Add utility packages for cluster management and certificate handling
 IMAGE_INSTALL:append = " curl wget ca-certificates "
 
+# Add iptables/netfilter kernel modules for Kubernetes/k3s networking
+IMAGE_INSTALL:append = " \
+    kernel-module-xt-conntrack \
+    kernel-module-xt-mark \
+    kernel-module-xt-nat \
+    kernel-module-xt-addrtype \
+    kernel-module-xt-multiport \
+    kernel-module-xt-comment \
+    kernel-module-xt-recent \
+    kernel-module-xt-statistic \
+    kernel-module-nf-conntrack \
+    kernel-module-nf-nat \
+    kernel-module-ip-tables \
+    kernel-module-iptable-filter \
+    kernel-module-iptable-nat \
+    kernel-module-iptable-mangle \
+    kernel-module-ipt-reject \
+    kernel-module-ipt-masquerade \
+    kernel-module-ip6-tables \
+    kernel-module-ip6table-filter \
+    kernel-module-ip6table-nat \
+    kernel-module-nf-conntrack-netlink \
+    kernel-module-br-netfilter \
+"
+
 # Check for required distro features
 inherit features_check
 REQUIRED_DISTRO_FEATURES = "virtualization"
