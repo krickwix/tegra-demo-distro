@@ -6,8 +6,8 @@ LICENSE = "MIT"
 # Use demo-image-common as base (includes ssh, packagegroups, CUDA SDK)
 require demo-image-common.inc
 
-# Enable root login with empty password
-IMAGE_FEATURES += "empty-root-password allow-root-login"
+# Enable root login with empty password and package management
+IMAGE_FEATURES += "empty-root-password allow-root-login package-management"
 
 # Add packages from demo-image-full (excluding X11/graphical components)
 CORE_IMAGE_BASE_INSTALL += "libvisionworks-devso-symlink nvidia-docker cuda-libraries"
@@ -16,6 +16,17 @@ CORE_IMAGE_BASE_INSTALL += "${@bb.utils.contains('DISTRO_FEATURES', 'vulkan', 'p
 
 # Add utility packages for cluster management and certificate handling
 IMAGE_INSTALL:append = " curl wget ca-certificates "
+
+# Add NFS client support
+IMAGE_INSTALL:append = " nfs-utils nfs-utils-client rpcbind "
+IMAGE_INSTALL:append = " \
+    kernel-module-nfs \
+    kernel-module-nfsv3 \
+    kernel-module-nfsv4 \
+    kernel-module-nfsd \
+    kernel-module-lockd \
+    kernel-module-rpcsec-gss-krb5 \
+"
 
 # Add iptables/netfilter kernel modules for Kubernetes/k3s networking
 IMAGE_INSTALL:append = " \
