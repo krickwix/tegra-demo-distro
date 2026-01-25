@@ -17,8 +17,8 @@ CORE_IMAGE_BASE_INSTALL += "${@bb.utils.contains('DISTRO_FEATURES', 'vulkan', 'p
 # Add utility packages for cluster management and certificate handling
 IMAGE_INSTALL:append = " curl wget ca-certificates "
 
-# Add iSCSI userspace tools for Longhorn
-IMAGE_INSTALL:append = " open-iscsi sg3-utils lsscsi "
+# Add iSCSI and SCSI management tools (open-iscsi requires meta-openembedded layer)
+IMAGE_INSTALL:append = " sg3-utils lsscsi "
 
 # Add NFS client support
 IMAGE_INSTALL:append = " nfs-utils nfs-utils-client rpcbind "
