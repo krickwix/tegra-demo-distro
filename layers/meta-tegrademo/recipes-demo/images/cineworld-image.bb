@@ -17,6 +17,9 @@ CORE_IMAGE_BASE_INSTALL += "${@bb.utils.contains('DISTRO_FEATURES', 'vulkan', 'p
 # Add utility packages for cluster management and certificate handling
 IMAGE_INSTALL:append = " curl wget ca-certificates "
 
+# Add iSCSI userspace tools for Longhorn
+IMAGE_INSTALL:append = " open-iscsi "
+
 # Add NFS client support
 IMAGE_INSTALL:append = " nfs-utils nfs-utils-client rpcbind "
 IMAGE_INSTALL:append = " \
@@ -26,6 +29,22 @@ IMAGE_INSTALL:append = " \
     kernel-module-nfsd \
     kernel-module-lockd \
     kernel-module-rpcsec-gss-krb5 \
+"
+
+# Add iSCSI support for Longhorn distributed block storage
+IMAGE_INSTALL:append = " \
+    kernel-module-iscsi-tcp \
+    kernel-module-libiscsi \
+    kernel-module-libiscsi-tcp \
+    kernel-module-scsi-transport-iscsi \
+    kernel-module-iscsi-boot-sysfs \
+"
+
+# Add Ceph RBD support for Rook-Ceph storage
+IMAGE_INSTALL:append = " \
+    kernel-module-rbd \
+    kernel-module-libceph \
+    kernel-module-ceph \
 "
 
 # Add iptables/netfilter kernel modules for Kubernetes/k3s networking
