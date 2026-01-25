@@ -22,30 +22,33 @@ IMAGE_INSTALL:append = " sg3-utils lsscsi "
 
 # Add NFS client support
 IMAGE_INSTALL:append = " nfs-utils nfs-utils-client rpcbind "
-IMAGE_INSTALL:append = " \
-    kernel-module-nfs \
-    kernel-module-nfsv3 \
-    kernel-module-nfsv4 \
-    kernel-module-nfsd \
-    kernel-module-lockd \
-    kernel-module-rpcsec-gss-krb5 \
-"
+# Note: NFS kernel modules may be built-in to the kernel rather than loadable modules
+# IMAGE_INSTALL:append = " \
+#     kernel-module-nfs \
+#     kernel-module-nfsv3 \
+#     kernel-module-nfsv4 \
+#     kernel-module-nfsd \
+#     kernel-module-lockd \
+#     kernel-module-rpcsec-gss-krb5 \
+# "
 
 # Add iSCSI support for Longhorn distributed block storage
-IMAGE_INSTALL:append = " \
-    kernel-module-iscsi-tcp \
-    kernel-module-libiscsi \
-    kernel-module-libiscsi-tcp \
-    kernel-module-scsi-transport-iscsi \
-    kernel-module-iscsi-boot-sysfs \
-"
+# Note: iSCSI kernel modules may be built-in to the kernel rather than loadable modules
+# IMAGE_INSTALL:append = " \
+#     kernel-module-iscsi-tcp \
+#     kernel-module-libiscsi \
+#     kernel-module-libiscsi-tcp \
+#     kernel-module-scsi-transport-iscsi \
+#     kernel-module-iscsi-boot-sysfs \
+# "
 
 # Add Ceph RBD support for Rook-Ceph storage
-IMAGE_INSTALL:append = " \
-    kernel-module-rbd \
-    kernel-module-libceph \
-    kernel-module-ceph \
-"
+# Note: Ceph kernel modules may be built-in to the kernel rather than loadable modules
+# IMAGE_INSTALL:append = " \
+#     kernel-module-rbd \
+#     kernel-module-libceph \
+#     kernel-module-ceph \
+# "
 
 # Add iptables/netfilter kernel modules for Kubernetes/k3s networking
 IMAGE_INSTALL:append = " \
