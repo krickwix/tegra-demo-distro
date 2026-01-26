@@ -1,0 +1,38 @@
+# Tegra Demo Distro - Repository Configuration for Jetson AGX Xavier
+# Installation: sudo cp jetson-agx-xavier.repo /etc/yum.repos.d/
+# Remember to replace YOUR_SERVER_IP with your actual server IP address
+
+[tegra-jetson-agx-xavier]
+name=Tegra Demo Distro - Jetson AGX Xavier (Device Specific)
+baseurl=http://192.168.0.78:8080/jetson_agx_xavier_devkit
+enabled=1
+gpgcheck=0
+priority=5
+
+[tegra-armv8a-tegra194]
+name=Tegra Demo Distro - ARMv8a Tegra 194 (Xavier Platform)
+baseurl=http://192.168.0.78:8080/armv8a_tegra194
+enabled=1
+gpgcheck=0
+priority=10
+
+[tegra-armv8a-tegra]
+name=Tegra Demo Distro - ARMv8a Tegra (Common)
+baseurl=http://192.168.0.78:8080/armv8a_tegra
+enabled=1
+gpgcheck=0
+priority=10
+
+[tegra-armv8a]
+name=Tegra Demo Distro - ARMv8a (Base)
+baseurl=http://192.168.0.78:8080/armv8a
+enabled=1
+gpgcheck=0
+priority=10
+
+[tegra-noarch]
+name=Tegra Demo Distro - Architecture Independent
+baseurl=http://192.168.0.78:8080/noarch
+enabled=1
+gpgcheck=0
+priority=10

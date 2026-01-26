@@ -1,0 +1,62 @@
+# Tegra Demo Distro - RPM Repository Configuration
+# Copy this file to /etc/yum.repos.d/ on target systems
+
+# Base architecture packages
+[tegra-armv8a]
+name=Tegra Demo Distro - ARMv8a
+baseurl=http://YOUR_SERVER_IP/tegra-repo/armv8a
+enabled=1
+gpgcheck=0
+priority=10
+
+[tegra-armv8a-tegra]
+name=Tegra Demo Distro - ARMv8a Tegra
+baseurl=http://YOUR_SERVER_IP/tegra-repo/armv8a_tegra
+enabled=1
+gpgcheck=0
+priority=10
+
+[tegra-armv8a-tegra186]
+name=Tegra Demo Distro - ARMv8a Tegra 186 (TX2)
+baseurl=http://YOUR_SERVER_IP/tegra-repo/armv8a_tegra186
+enabled=1
+gpgcheck=0
+priority=10
+
+[tegra-armv8a-tegra194]
+name=Tegra Demo Distro - ARMv8a Tegra 194 (Xavier)
+baseurl=http://YOUR_SERVER_IP/tegra-repo/armv8a_tegra194
+enabled=1
+gpgcheck=0
+priority=10
+
+# Device-specific packages
+[tegra-jetson-agx-xavier]
+name=Tegra Demo Distro - Jetson AGX Xavier DevKit
+baseurl=http://YOUR_SERVER_IP/tegra-repo/jetson_agx_xavier_devkit
+enabled=1
+gpgcheck=0
+priority=5
+
+[tegra-jetson-xavier-nx]
+name=Tegra Demo Distro - Jetson Xavier NX DevKit
+baseurl=http://YOUR_SERVER_IP/tegra-repo/jetson_xavier_nx_devkit
+enabled=1
+gpgcheck=0
+priority=5
+
+[tegra-jetson-xavier-nx-tx2]
+name=Tegra Demo Distro - Jetson Xavier NX DevKit TX2
+baseurl=http://YOUR_SERVER_IP/tegra-repo/jetson_xavier_nx_devkit_tx2_nx
+enabled=1
+gpgcheck=0
+priority=5
+
+# Architecture-independent packages
+[tegra-noarch]
+name=Tegra Demo Distro - NoArch
+baseurl=http://YOUR_SERVER_IP/tegra-repo/noarch
+enabled=1
+gpgcheck=0
+priority=10
+

@@ -1,0 +1,38 @@
+# Tegra Demo Distro - Repository Configuration for Jetson Xavier NX with TX2 NX
+# Installation: sudo cp jetson-xavier-nx-tx2.repo /etc/yum.repos.d/
+# Remember to replace YOUR_SERVER_IP with your actual server IP address
+
+[tegra-jetson-xavier-nx-tx2]
+name=Tegra Demo Distro - Jetson Xavier NX TX2 (Device Specific)
+baseurl=http://YOUR_SERVER_IP/tegra-repo/jetson_xavier_nx_devkit_tx2_nx
+enabled=1
+gpgcheck=0
+priority=5
+
+[tegra-armv8a-tegra186]
+name=Tegra Demo Distro - ARMv8a Tegra 186 (TX2 Platform)
+baseurl=http://YOUR_SERVER_IP/tegra-repo/armv8a_tegra186
+enabled=1
+gpgcheck=0
+priority=10
+
+[tegra-armv8a-tegra]
+name=Tegra Demo Distro - ARMv8a Tegra (Common)
+baseurl=http://YOUR_SERVER_IP/tegra-repo/armv8a_tegra
+enabled=1
+gpgcheck=0
+priority=10
+
+[tegra-armv8a]
+name=Tegra Demo Distro - ARMv8a (Base)
+baseurl=http://YOUR_SERVER_IP/tegra-repo/armv8a
+enabled=1
+gpgcheck=0
+priority=10
+
+[tegra-noarch]
+name=Tegra Demo Distro - Architecture Independent
+baseurl=http://YOUR_SERVER_IP/tegra-repo/noarch
+enabled=1
+gpgcheck=0
+priority=10

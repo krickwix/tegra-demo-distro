@@ -1,0 +1,147 @@
+╔════════════════════════════════════════════════════════════════════════════╗
+║               MISSING DEPENDENCIES ANALYSIS REPORT                         ║
+║                          open-isns Package                                 ║
+╚════════════════════════════════════════════════════════════════════════════╝
+
+🔍 ISSUE IDENTIFIED
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+The `iscsi-initiator-utils` package requires the `open-isns` library, but the
+open-isns RPM packages were NOT deployed to your repository.
+
+Package: iscsi-initiator-utils-2.1.6-r0.armv8a.rpm
+Location: /media/fandrieu/build/all/tmp/deploy/rpm/armv8a/
+
+Required Dependencies (MISSING):
+  ❌ open-isns >= 0.101
+  ❌ libisns.so.0()(64bit)
+  ❌ libisns.so.0(LIBISNS_0.96)(64bit)
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+📊 BUILD ANALYSIS
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+Status: open-isns was BUILT but RPMs were NOT created
+
+Build Directory: 
+  /media/fandrieu/build/all/tmp/work/armv8a-oe4t-linux/open-isns/0.101-r0/
+
+Metadata Found:
+  ✅ /tmp/work/.../pkgdata-sysroot/shlibs2/open-isns.list
+  ✅ /tmp/work/.../pkgdata-sysroot/extended/open-isns*.json.zstd
+  ✅ Package directory: /tmp/work/.../packages-split/open-isns
+
+Expected Library:
+  libisns.so.0 in /usr/lib (version 0.101)
+
+RPM Deploy Status:
+  ❌ No RPMs found in /media/fandrieu/build/all/tmp/deploy/rpm/armv8a/
+  ❌ No RPMs found in /tmp/work/.../deploy-rpms/
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+🔧 ROOT CAUSE
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+Possible reasons why open-isns RPMs were not created:
+
+1. RPM packaging was not enabled for open-isns in the Yocto recipe
+2. The open-isns package was built as a build-time dependency only
+3. Package was excluded from RPM generation in local.conf or recipe
+4. Build failure during RPM packaging stage (check logs)
+5. Package configured with "do_package_write_rpm" disabled
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+✅ SOLUTIONS
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+OPTION 1: Rebuild open-isns with RPM packaging (RECOMMENDED)
+────────────────────────────────────────────────────────────
+
+In your Yocto build environment:
+
+  $ cd /media/fandrieu/build
+  $ bitbake open-isns
+  $ bitbake open-isns -c package_write_rpm
+
+This will generate the RPM packages and deploy them to:
+  /media/fandrieu/build/all/tmp/deploy/rpm/armv8a/
+
+Expected packages:
+  - open-isns-0.101-r0.armv8a.rpm              (main package with libisns.so.0)
+  - open-isns-dev-0.101-r0.armv8a.rpm          (development files)
+  - open-isns-dbg-0.101-r0.armv8a.rpm          (debug symbols)
+  - open-isns-doc-0.101-r0.armv8a.rpm          (documentation)
+  - open-isns-src-0.101-r0.armv8a.rpm          (source)
+
+After rebuilding:
+  $ cd /home/fandrieu/Documents/tegra-demo-distro
+  $ ./update-repo.sh
+
+OPTION 2: Add open-isns to your Yocto image recipe
+───────────────────────────────────────────────────
+
+Edit your image recipe (e.g., tegra-demo-distro.bb or local.conf):
+
+  IMAGE_INSTALL:append = " open-isns"
+
+Then rebuild your image:
+  $ bitbake <your-image-name>
+
+OPTION 3: Check if RPMs exist elsewhere
+────────────────────────────────────────
+
+Search your entire build directory:
+
+  $ find /media/fandrieu/build -name "open-isns*.rpm" -type f
+
+If found elsewhere, copy them to the deploy directory:
+
+  $ cp /path/to/open-isns*.rpm /media/fandrieu/build/all/tmp/deploy/rpm/armv8a/
+  $ cd /home/fandrieu/Documents/tegra-demo-distro
+  $ ./update-repo.sh
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+🔍 ADDITIONAL INVESTIGATION
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+Check build logs for errors:
+
+  $ cat /media/fandrieu/build/all/tmp/work/armv8a-oe4t-linux/open-isns/0.101-r0/temp/log.do_package_write_rpm
+
+Check if recipe exists:
+
+  $ find /media/fandrieu/build -name "open-isns*.bb" -o -name "open-isns*.bbappend"
+
+Check recipe configuration:
+
+  $ bitbake open-isns -e | grep "^PN=\|^PV=\|^PACKAGES="
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+📦 OTHER AFFECTED PACKAGES
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+Other packages that may have similar missing dependencies:
+
+To find all packages with missing dependencies:
+
+  $ cd /home/fandrieu/Documents/tegra-demo-distro
+  $ ./check-missing-dependencies.sh
+
+(Script will be created to scan all RPMs for unresolved dependencies)
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+📋 SUMMARY
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+❌ Problem: open-isns library package is missing from repository
+✅ Solution: Rebuild open-isns package with RPM packaging enabled
+⚠️  Impact: iscsi-initiator-utils cannot be installed without it
+
+Next Steps:
+1. Run: bitbake open-isns -c package_write_rpm
+2. Run: ./update-repo.sh
+3. Verify: ls /media/fandrieu/build/all/tmp/deploy/rpm/armv8a/open-isns*.rpm
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+For assistance, check the Yocto build logs or contact your build system administrator.

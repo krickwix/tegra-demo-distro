@@ -1,0 +1,94 @@
+╔════════════════════════════════════════════════════════════════════════════╗
+║                    iSNS DEPENDENCIES - QUICK FIX                           ║
+╚════════════════════════════════════════════════════════════════════════════╝
+
+⚠️  PROBLEM IDENTIFIED
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+The `iscsi-initiator-utils` package in your repository requires the `open-isns`
+library, but the open-isns RPM packages are MISSING from your repository.
+
+Missing Packages:
+  ❌ open-isns-0.101-r0.armv8a.rpm
+  ❌ open-isns-dev-0.101-r0.armv8a.rpm
+  ❌ open-isns-dbg-0.101-r0.armv8a.rpm
+
+Impact:
+  - Cannot install iscsi-initiator-utils on Jetson devices
+  - DNF dependency resolution will fail
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+✅ SOLUTION (Choose one)
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+OPTION 1: Rebuild open-isns Package (RECOMMENDED)
+──────────────────────────────────────────────────
+
+1. Navigate to your Yocto build directory:
+   $ cd /media/fandrieu/build
+
+2. Rebuild open-isns with RPM packaging:
+   $ bitbake open-isns -c package_write_rpm
+
+3. Copy to deploy directory (if needed):
+   $ bitbake open-isns -c package_write_rpm -f
+
+4. Update your repository:
+   $ cd /home/fandrieu/Documents/tegra-demo-distro
+   $ ./update-repo.sh
+
+5. Verify the packages are available:
+   $ ls /media/fandrieu/build/all/tmp/deploy/rpm/armv8a/open-isns*.rpm
+
+
+OPTION 2: Search and Copy if Already Built
+───────────────────────────────────────────
+
+Search your entire build tree:
+  $ find /media/fandrieu/build -name "open-isns*.rpm" -type f
+
+If found, copy to deploy directory:
+  $ cp <path-to-rpms>/open-isns*.rpm /media/fandrieu/build/all/tmp/deploy/rpm/armv8a/
+  $ ./update-repo.sh
+
+
+OPTION 3: Check Missing Dependencies Repository-Wide
+─────────────────────────────────────────────────────
+
+Run comprehensive dependency check:
+  $ cd /home/fandrieu/Documents/tegra-demo-distro
+  $ ./check-missing-dependencies.sh
+
+This will scan ALL packages and report ALL missing dependencies.
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+🔍 VERIFICATION
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+After fixing, verify the package is in repository:
+
+1. Check files exist:
+   $ ls -lh /media/fandrieu/build/all/tmp/deploy/rpm/armv8a/open-isns*.rpm
+
+2. Check provides:
+   $ rpm -qp --provides /media/fandrieu/build/all/tmp/deploy/rpm/armv8a/open-isns-0.101-r0.armv8a.rpm | grep libisns
+
+   Expected output:
+   libisns.so.0()(64bit)
+   libisns.so.0(LIBISNS_0.96)(64bit)
+   open-isns = 0.101-r0
+
+3. Test on Jetson device:
+   $ sudo dnf install iscsi-initiator-utils
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+📚 DOCUMENTATION
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+For detailed analysis:
+  MISSING_DEPENDENCIES_REPORT.txt  - Full analysis and troubleshooting
+
+For dependency checking:
+  ./check-missing-dependencies.sh  - Scan entire repository for missing deps
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━

@@ -1,0 +1,166 @@
+╔════════════════════════════════════════════════════════════════════════════╗
+║                    MANUAL INSTALLATION INSTRUCTIONS                        ║
+║                    (For Ubuntu 18.04 / Systems without sudo access)        ║
+╚════════════════════════════════════════════════════════════════════════════╝
+
+Since the automated script requires sudo access, here are the manual steps:
+
+═══════════════════════════════════════════════════════════════════════════════
+STEP 1: Install createrepo (ONE TIME ONLY)
+═══════════════════════════════════════════════════════════════════════════════
+
+Run this command in your terminal:
+
+    sudo apt install createrepo
+
+This will install the tool needed to generate repository metadata.
+
+═══════════════════════════════════════════════════════════════════════════════
+STEP 2: Generate Repository Metadata
+═══════════════════════════════════════════════════════════════════════════════
+
+After createrepo is installed, run these commands to create metadata for each
+package directory:
+
+    cd /media/fandrieu/build/all/tmp/deploy/rpm
+    
+    createrepo noarch
+    createrepo armv8a
+    createrepo armv8a_tegra
+    createrepo armv8a_tegra186
+    createrepo armv8a_tegra194
+    createrepo jetson_agx_xavier_devkit
+    createrepo jetson_xavier_nx_devkit
+    createrepo jetson_xavier_nx_devkit_tx2_nx
+
+This will create a "repodata" directory in each folder containing the
+repository metadata.
+
+═══════════════════════════════════════════════════════════════════════════════
+STEP 3: Start the Repository Server
+═══════════════════════════════════════════════════════════════════════════════
+
+Option A - Simple HTTP Server (No sudo required):
+
+    cd /media/fandrieu/build/all/tmp/deploy
+    python3 -m http.server 8080
+
+    Your repository will be available at:
+    http://YOUR_IP:8080/rpm/
+
+    Press Ctrl+C to stop the server.
+
+Option B - Production Server (Nginx - requires sudo):
+
+    1. Install nginx:
+       sudo apt install nginx
+
+    2. Create configuration file:
+       sudo nano /etc/nginx/sites-available/tegra-repo
+
+    3. Add this content:
+       
+       server {
+           listen 80;
+           server_name _;
+           
+           location /tegra-repo {
+               alias /media/fandrieu/build/all/tmp/deploy/rpm;
+               autoindex on;
+               autoindex_exact_size off;
+               autoindex_localtime on;
+           }
+       }
+
+    4. Enable and restart:
+       sudo ln -s /etc/nginx/sites-available/tegra-repo /etc/nginx/sites-enabled/
+       sudo nginx -t
+       sudo systemctl restart nginx
+
+    Your repository will be available at:
+    http://YOUR_IP/tegra-repo/
+
+═══════════════════════════════════════════════════════════════════════════════
+STEP 4: Configure Client Devices (Jetson)
+═══════════════════════════════════════════════════════════════════════════════
+
+Copy the appropriate repo file to your Jetson device:
+
+    # From your build machine
+    cd /home/fandrieu/Documents/tegra-demo-distro
+    scp device-specific-repos/jetson-agx-xavier.repo nvidia@JETSON_IP:/tmp/
+
+On the Jetson device:
+
+    # Copy to yum repos directory
+    sudo cp /tmp/jetson-agx-xavier.repo /etc/yum.repos.d/
+
+    # Edit the file to set your server IP
+    sudo nano /etc/yum.repos.d/jetson-agx-xavier.repo
+    
+    # Replace all instances of "YOUR_SERVER_IP" with your actual server IP
+    # For example, if using simple HTTP server on port 8080:
+    #   http://192.168.1.100:8080/rpm
+    # For nginx:
+    #   http://192.168.1.100/tegra-repo
+
+    # Update repository cache
+    sudo dnf clean all
+    sudo dnf makecache
+
+    # Test it works
+    sudo dnf repolist | grep tegra
+    sudo dnf search alsa
+
+═══════════════════════════════════════════════════════════════════════════════
+UPDATING THE REPOSITORY (After building new packages)
+═══════════════════════════════════════════════════════════════════════════════
+
+When you build new RPM packages, update the repository metadata:
+
+    cd /media/fandrieu/build/all/tmp/deploy/rpm
+    
+    # Update only changed repos (faster)
+    createrepo --update noarch
+    createrepo --update armv8a
+    # ... etc for other directories that changed
+    
+    # Or update all at once
+    for dir in */; do createrepo --update "$dir"; done
+
+Changes are immediately available to clients (no restart needed).
+
+═══════════════════════════════════════════════════════════════════════════════
+QUICK REFERENCE - Repository URLs
+═══════════════════════════════════════════════════════════════════════════════
+
+If using simple HTTP server (python3 -m http.server 8080):
+    Base: http://YOUR_IP:8080/rpm/
+    Example: http://192.168.1.100:8080/rpm/noarch/
+
+If using nginx:
+    Base: http://YOUR_IP/tegra-repo/
+    Example: http://192.168.1.100/tegra-repo/noarch/
+
+═══════════════════════════════════════════════════════════════════════════════
+TROUBLESHOOTING
+═══════════════════════════════════════════════════════════════════════════════
+
+Problem: "createrepo: command not found"
+Solution: sudo apt install createrepo
+
+Problem: Client can't connect to repository
+Solution: 
+  - Check firewall: sudo ufw allow 8080/tcp (or 80/tcp for nginx)
+  - Test locally: curl http://localhost:8080/rpm/noarch/repodata/repomd.xml
+  - Make sure server is running
+
+Problem: "repomd.xml not found"
+Solution: Run createrepo on each directory (see STEP 2)
+
+Problem: Packages not showing up
+Solution: 
+  - Update metadata: createrepo --update /path/to/repo
+  - Clear client cache: sudo dnf clean all && sudo dnf makecache
+
+═══════════════════════════════════════════════════════════════════════════════
