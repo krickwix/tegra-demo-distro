@@ -34,13 +34,13 @@ IMAGE_INSTALL:append = " nfs-utils nfs-utils-client rpcbind "
 
 # Add iSCSI support for Longhorn distributed block storage
 # Note: iSCSI kernel modules may be built-in to the kernel rather than loadable modules
-# IMAGE_INSTALL:append = " \
-#     kernel-module-iscsi-tcp \
-#     kernel-module-libiscsi \
-#     kernel-module-libiscsi-tcp \
-#     kernel-module-scsi-transport-iscsi \
-#     kernel-module-iscsi-boot-sysfs \
-# "
+IMAGE_INSTALL:append = " \
+    kernel-module-iscsi-tcp \
+    kernel-module-libiscsi \
+    kernel-module-libiscsi-tcp \
+    kernel-module-scsi-transport-iscsi \
+    kernel-module-iscsi-boot-sysfs \
+"
 
 # Add Ceph RBD support for Rook-Ceph storage
 # Note: Ceph kernel modules may be built-in to the kernel rather than loadable modules
