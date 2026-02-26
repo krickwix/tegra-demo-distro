@@ -1,4 +1,4 @@
-FILESEXTRAPATHS:prepend := "${THISDIR}/${PN}:"
+FILESEXTRAPATHS:prepend := "${THISDIR}/linux-tegra:"
 
 SRC_URI += "file://iscsi.cfg"
 
