@@ -2,7 +2,7 @@ DISTRO = "tegrademo"
 DISTRO_NAME = "OE4Tegra Demonstration Distro"
 DISTRO_VERSION_BASE = "5.3"
 DISTRO_VERSION = "${DISTRO_VERSION_BASE}+snapshot-${METADATA_REVISION}"
-DISTRO_CODENAME = "master-thor-r38.2"
+DISTRO_CODENAME = "master-thor-r38.4"
 SDK_VENDOR = "-tdsdk"
 SDK_VERSION := "${@'${DISTRO_VERSION}'.replace('snapshot-${METADATA_REVISION}','snapshot')}"
 SDK_VERSION[vardepvalue] = "${SDK_VERSION}"
@@ -42,12 +42,6 @@ SANITY_TESTED_DISTROS ?= " \
 
 # Most NVIDIA-supplied services expect systemd
 INIT_MANAGER = "systemd"
-
-require conf/distro/include/no-static-libs.inc
-require conf/distro/include/yocto-uninative.inc
-require conf/distro/include/security_flags.inc
-require conf/distro/include/yocto-space-optimize.inc
-INHERIT += "uninative"
 
 LICENSE_FLAGS_ACCEPTED += "commercial_faad2 commercial_x264"
 
