@@ -38,11 +38,6 @@ fi
 
 # Running bitbake builds as root can cause issues, so flag this
 
-if [ $(id -u) -eq 0 ]; then
-    echo "ERROR: do not use the BSP as root. Exiting..."
-    unset THIS_SCRIPT
-    return 1
-fi
 
 TD_TOP=$(dirname "$THIS_SCRIPT")
 TD_TOP=$(readlink -f "$TD_TOP")
