@@ -23,6 +23,21 @@ IMAGE_INSTALL:append = " open-iscsi sg3-utils lsscsi "
 # Add NFS client support
 IMAGE_INSTALL:append = " nfs-utils nfs-utils-client rpcbind "
 
+# Install userspace dependencies used by k3s/container networking.
+# k3s itself is intentionally not included in this image.
+IMAGE_INSTALL:append = " \
+    conntrack-tools \
+    iptables \
+    iproute2 \
+    ethtool \
+    socat \
+    ebtables \
+    nftables \
+"
+
+# Include all built kernel modules so k3s/Longhorn dependencies are present
+IMAGE_INSTALL:append = " kernel-modules "
+
 # Add kernel modules for storage/networking when they are available as loadable modules.
 # On some machines these features are built into the kernel, so make them best-effort.
 PACKAGE_INSTALL_ATTEMPTONLY:append = " \
@@ -52,7 +67,19 @@ PACKAGE_INSTALL_ATTEMPTONLY:append = " \
     kernel-module-ip6table-nat \
     kernel-module-nf-conntrack-netlink \
     kernel-module-br-netfilter \
+    kernel-module-ip-vs \
+    kernel-module-ip-vs-rr \
+    kernel-module-ip-vs-wrr \
+    kernel-module-ip-vs-sh \
+    kernel-module-veth \
+    kernel-module-overlay \
+    kernel-module-ceph \
+    kernel-module-libceph \
+    kernel-module-rbd \
 "
+
+# Ensure this image boots without a graphical login/session target
+SYSTEMD_DEFAULT_TARGET = "multi-user.target"
 
 # Check for required distro features
 inherit features_check
