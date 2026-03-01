@@ -96,4 +96,65 @@ disable_docker_service() {
 
 ROOTFS_POSTPROCESS_COMMAND += "disable_docker_service; "
 
+# Ensure netfilter modules/chains exist before k3s/klipper-lb use iptables-nft.
+install_k3s_netfilter_bootstrap() {
+    install -d ${IMAGE_ROOTFS}${sysconfdir}/modules-load.d
+    cat > ${IMAGE_ROOTFS}${sysconfdir}/modules-load.d/k3s-netfilter.conf << 'EOF'
+br_netfilter
+nf_tables
+nft_compat
+nf_nat
+nf_conntrack
+ip_tables
+iptable_filter
+iptable_nat
+EOF
+
+    install -d ${IMAGE_ROOTFS}${sbindir}
+    cat > ${IMAGE_ROOTFS}${sbindir}/k3s-netfilter-init.sh << 'EOF'
+#!/bin/sh
+set -eu
+
+for m in br_netfilter nf_tables nft_compat nf_nat nf_conntrack ip_tables iptable_filter iptable_nat; do
+    modprobe "$m" 2>/dev/null || true
+done
+
+if command -v nft >/dev/null 2>&1; then
+    nft list table ip filter >/dev/null 2>&1 || nft add table ip filter
+    nft list chain ip filter INPUT >/dev/null 2>&1 || nft 'add chain ip filter INPUT { type filter hook input priority 0 ; policy accept ; }'
+    nft list chain ip filter FORWARD >/dev/null 2>&1 || nft 'add chain ip filter FORWARD { type filter hook forward priority 0 ; policy accept ; }'
+    nft list chain ip filter OUTPUT >/dev/null 2>&1 || nft 'add chain ip filter OUTPUT { type filter hook output priority 0 ; policy accept ; }'
+    nft list table ip nat >/dev/null 2>&1 || nft add table ip nat
+    nft list chain ip nat PREROUTING >/dev/null 2>&1 || nft 'add chain ip nat PREROUTING { type nat hook prerouting priority -100 ; policy accept ; }'
+    nft list chain ip nat OUTPUT >/dev/null 2>&1 || nft 'add chain ip nat OUTPUT { type nat hook output priority -100 ; policy accept ; }'
+    nft list chain ip nat POSTROUTING >/dev/null 2>&1 || nft 'add chain ip nat POSTROUTING { type nat hook postrouting priority 100 ; policy accept ; }'
+fi
+EOF
+    chmod 0755 ${IMAGE_ROOTFS}${sbindir}/k3s-netfilter-init.sh
+
+    install -d ${IMAGE_ROOTFS}${systemd_system_unitdir}
+    cat > ${IMAGE_ROOTFS}${systemd_system_unitdir}/k3s-netfilter-init.service << 'EOF'
+[Unit]
+Description=Initialize netfilter modules and nft base chains for k3s
+DefaultDependencies=no
+After=systemd-modules-load.service local-fs.target
+Before=network-pre.target
+Wants=network-pre.target
+
+[Service]
+Type=oneshot
+ExecStart=/usr/sbin/k3s-netfilter-init.sh
+RemainAfterExit=yes
+
+[Install]
+WantedBy=multi-user.target
+EOF
+
+    install -d ${IMAGE_ROOTFS}${sysconfdir}/systemd/system/multi-user.target.wants
+    ln -sf ${systemd_system_unitdir}/k3s-netfilter-init.service \
+        ${IMAGE_ROOTFS}${sysconfdir}/systemd/system/multi-user.target.wants/k3s-netfilter-init.service
+}
+
+ROOTFS_POSTPROCESS_COMMAND += "install_k3s_netfilter_bootstrap; "
+
 inherit nopackages
